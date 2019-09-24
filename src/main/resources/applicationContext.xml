@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!--读取小配置文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+    <!--配置链接数据库的相关资源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${driver}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${name}"></property>
+        <property name="password" value="${password}"></property>
+    </bean>
+
+    <!--创建sqlsessionfactory(需要数据源)   2.给实体类起别名   3. 注册mapper文件-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+
+        <property name="typeAliasesPackage">
+            <value>com.baizhi.entity</value>
+        </property>
+
+        <property name="mapperLocations">
+            <!--注意可能有多个mapper文件，所以要用到list标签-->
+            <list>
+                <value>classpath:com/baizhi/mapper/*Mapper.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--spring自动创建dao接口的实现类  id 为dao接口的首字母小写-->
+    <bean id="scannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage">
+            <value>com.baizhi.dao</value>
+        </property>
+    </bean>
+     <!--配置原始类-->
+    <bean id="userService" class="com.baizhi.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+
+    <bean id="employeeService" class="com.baizhi.service.EmployeeServiceImpl">
+        <property name="employeeDao" ref="employeeDao"></property>
+    </bean>
+    <!--引入额外功能事务 的相关信息(需要数据源)-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--描述事务的相关属性-->
+    <tx:advice id="dstm" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="modify*"/>
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--配置切入点-->
+    <aop:config>
+        <aop:pointcut id="pc" expression="execution(*  com.baizhi.service..*.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="dstm" pointcut-ref="pc"></aop:advisor>
+    </aop:config>
+
+    <!--配置action-->
+     <bean id="userAction" class="com.baizhi.action.UserAction">
+         <property name="userService" ref="userService"></property>
+     </bean>
+     <bean id="employeeAction" class="com.baizhi.action.EmployeeAction">
+         <property name="employeeService" ref="employeeService"></property>
+     </bean>
+</beans>

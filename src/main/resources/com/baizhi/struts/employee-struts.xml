@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <package name="employee" extends="struts-default" namespace="/employee">
+        <action name="selectAll" class="employeeAction" method="selectAll">
+            <result name="success">/emplist.jsp</result>
+        </action>
+        <action name="insert" class="employeeAction" method="insert">
+            <result name="success" type="redirectAction">selectAll</result>
+        </action>
+        <action name="selectById" class="employeeAction" method="selectById">
+            <result name="success">/updateEmp.jsp</result>
+        </action>
+        <action name="update" class="employeeAction" method="update">
+            <result name="success" type="redirectAction">selectAll</result>
+        </action>
+        <action name="deleteById" class="employeeAction" method="deleteById">
+            <result name="success" type="redirectAction">selectAll</result>
+        </action>
+    </package>
+</struts>

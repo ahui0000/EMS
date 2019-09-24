@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.EmployeeDao">
+   <select id="selectAll" resultType="Employee">
+       select * from employee
+   </select>
+    <insert id="insert" parameterType="Employee">
+        insert into employee(name,salary,age) values(#{name},#{salary},#{age})
+    </insert>
+    <select id="selectById" parameterType="java.lang.Integer" resultType="Employee">
+        select * from employee where id=#{id}
+    </select>
+    <update id="update" parameterType="Employee">
+        update employee set name=#{name},salary=#{salary},age=#{age} where id=#{id}
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from employee where id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.UserDao">
+    <select id="selectByName" parameterType="java.lang.String" resultType="User">
+        select * from user where username=#{username}
+    </select>
+    <insert id="insert" parameterType="User">
+        insert into user(username,realname,password,sex) values(#{username},#{realname},#{password},#{sex})
+    </insert>
+</mapper>
