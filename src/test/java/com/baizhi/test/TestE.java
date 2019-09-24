@@ -4,7 +4,7 @@ import com.baizhi.dao.UserDao;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
+//猿人2修改 
 public class TestE {
     @Test
     public void test1(){
